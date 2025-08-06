@@ -1,0 +1,197 @@
+@charset "utf-8";
+
+/* 구글폰트에서 Noto Sans KR 300/400 과 Public Sans 400 가져옴 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400&family=Public+Sans&display=swap');
+
+/* Reset */
+* {margin: 0;padding: 0;}
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, tbody, tfoot, thead, tr, th, td{margin:0;padding:0;}
+a {color: inherit; text-decoration: inherit;}
+li {list-style: none;}
+address, em, i {font-style: normal;}
+button {background: none; border: none;}
+img {vertical-align: middle;}
+
+/* 영어 폰트 */
+.en {font-family: 'Public Sans', sans-serif;}
+.en2 {font-family: 'SilkSerifLightItalic';} /* 폰트 파일 첨부 */
+
+/* LayOut */
+body {font-family: 'Noto Sans KR', sans-serif; font-size: 16px; line-height: 1.6}
+.wrap {position: relative; margin: 0 auto; overflow: hidden; background: #000; color: #fff;} /* 마진보톰 3000px 정도 주고 작업해야 편함 */
+
+/* Header */
+header {position: fixed;z-index: 100; width: 100%; left: 0; top: 0; padding: 30px 60px; box-sizing: border-box;  display: flex; justify-content: space-between;transition: 0.3s; background: rgba(0, 0, 0, 0.5);}
+header.active {transform: translateY(-100%)}
+header .logo {color: #fff}
+header .menuOpen {display: none} /* 반응형 할때 햄버거 메뉴 작업 */
+.gnb ul {display: flex; justify-content: space-between;}
+.gnb ul li {margin-left: 70px}
+.gnb ul li a {display: block; position: relative;}
+
+/*
+    [ 0. header 스크롤 방향 이벤트 ]
+     0-1) header / visual 레이아웃 완성 후 script_main.js 파일 생성.
+     0-1) 스크롤을 내릴때 header 를 숨겨주도록 active 클래스를 붙이는 스크립트 0번 작성
+
+*/
+
+
+/*
+    [ 1. Gnb 마우스 오버 splitting 모션 ]
+     1-1) https://splitting.js.org/ 사이트 들어가서 플러그인 내용과 사용법 설명하고 플러그인 다운 후 head 에 걸어주기
+     1-2) script_main.js 에 1번 스크립트 작성 후 html gnb a 에 data-splitting 작성
+     1-3) 개발자도구로 span.char 클래스로 글자 마다 감싸졌는지 체크 후 css 작성
+
+*/
+
+/* gnb - 호버효과 */
+.gnb ul li a .char { display: inline-block; position: relative; overflow: hidden; color: transparent; /* 실제 글씨는 투명하게 해주고 가상 선택자를 이용해 모션 준다  */}
+.gnb ul li a .char:before, .gnb ul li a .char:after {color: #fff; position: absolute; top: 0; left: 0; opacity: 0.6;
+    content: attr(data-char); /* content 데이터 값으로 원래 글자를 넣어준다 */
+    transition: transform 0.35s; /* 모션 총 진행 시간 */
+    transition-delay: calc(30ms * var(--char-index)); /* 글자별 시간차를 둔다 */}
+.gnb ul li a .char:before { transform: translateY(100%);}  /* 일단 먼저 밑으로 내려준다 */
+.gnb ul li a:hover .char:after { transform: translateY(-100%);} /* 마우스오버 했을때 약간 투명한 글씨 위로 올려준다 */
+.gnb ul li a:hover .char:before {transform: translateY(0%);opacity: 1} /* 마우스오버 했을때 완전한 흰색 컬러 글씨가 올라오게 해준다 */
+
+
+/* visual */
+.visual {padding-top: 115px; width: 100%; height: 100vh; box-sizing: border-box; position: relative; letter-spacing: -1px}
+.visual .mainText {font-weight: 400; font-size: 140px; line-height: 1.2;margin: 30px 0 150px 60px; display: inline-block;}
+.visual .mainText p {overflow: hidden; margin-top: -20px}
+.visual .subText { margin-left: 20%}
+.visual .scroll {width: 500px; position: fixed; left:60px; bottom: 40px;}
+.visual .svgAni {width: 60%; transform: rotate(-10deg); position: absolute; right: -5%; top: 12%;}
+
+/*
+    [ 2. visual의 텍스트 애니 ]
+     2-1) https://maximzhurkin.github.io/jquery-scrolla/ 사이트 들어가서 플러그인 내용과 사용법 설명하고 플러그인 다운 후 head 에 걸어주기
+     2-2) script_main.js 에 2번 스크립트 작성 후 html에 data-animate="motion" 적어주고 개발자도구로 motion 클래스 붙는지 확인 해주기
+     2-3) css 애니메이션 작성
+*/
+
+/* visual - 텍스트 모션 */
+.visual.motion .mainText p{transform: translate3d(0,0,0)skewY(0deg);overflow: hidden;}
+.visual.motion .mainText p span{display:block; animation-name: textAni; animation-duration: 1.8s;}
+.visual.motion .mainText p:nth-child(2) span{animation-duration: 1.7s;} /* 밑줄 부터 먼저 내려 오도록 빠르게 타이밍 수정  */
+.visual.motion .mainText p:nth-child(3) span{animation-duration: 1.5s;}
+.visual.motion .mainText p{transform: translate3d(0,0,0)skewY(0deg);overflow: hidden;}
+.visual.motion .mainText p span{display:block; animation-name: textAni; animation-duration: 1.8s;}
+.visual.motion .mainText p:nth-child(2) span{animation-duration: 1.7s;} /* 밑줄 부터 먼저 내려 오도록 빠르게 타이밍 수정  */
+.visual.motion .mainText p:nth-child(3) span{animation-duration: 1.5s;}
+@keyframes textAni {
+    0%{opacity: 0;}
+    30%{opacity: 0; transform: translate3d(0,-90px,0)skewY(-10deg); transform-origin: top left;}
+}
+@keyframes textAni2 {
+    0%{opacity: 0;}
+    50%{opacity: 0;}
+}
+.visual.motion .subText {animation-name: textAni2; animation-duration: 2.3s;}
+.visual.motion .subText {animation-name: textAni2; animation-duration: 2.3s;}
+
+/*
+    [ 3. visual의 SVG 애니 ]
+     3-1) script_main.js 에 SVG 애니를 위해 각각 라인의 path 의 길이 값을 구하는 스크립트로 값 구하기 -> 3번 스크립트
+     3-2) 스크립트로 구한 값을 가져와서 두가지 속성을 이용해 애니메이션 만들어 주기
+         - stroke-dasharray는 점선을 만들어주는 속성
+         - stroke-dashoffset은 어디부터 시작할 것인지 정해주는 속성
+     * 참고 링크 : https://chpofo.tistory.com/47
+*/
+
+/* visual - SVG 모션 */
+/* svg 라인 애니메이션은 그려지는 느낌이 중요하기 때문에 보면서 타이밍 조절해야함 우리는 이미 타이밍 조절해서 만들었다고 설명 */
+.visual.motion #svgAni01{stroke-dasharray: 282; stroke-dashoffset: 282;animation: ani1  .5s linear 0s forwards;}
+.visual.motion #svgAni02{stroke-dasharray: 2240; stroke-dashoffset: -2240;animation: ani2 1.2s linear 0s forwards;} /* -2240 -> 마이너스로 되어있는건 글씨 애니 방향 때문 */
+.visual.motion #svgAni03{stroke-dasharray: 187; stroke-dashoffset: -187;animation: ani3 .5s linear 0s forwards;}
+.visual.motion #svgAni04{stroke-dasharray: 97; stroke-dashoffset: -97;animation: ani4  .2s linear .1s forwards;}
+@keyframes ani1 { 0% {stroke-dashoffset : 282;} 100% {stroke-dashoffset : 0;} }
+@keyframes ani2 { 0% {stroke-dashoffset : 2240;} 100% {stroke-dashoffset : 0;} }
+@keyframes ani3 { 0% {stroke-dashoffset : 187;} 100% {stroke-dashoffset : 0;} }
+@keyframes ani4 { 0% {stroke-dashoffset : 97;} 100% {stroke-dashoffset : 0;} }
+
+/* con01 - 비디오 영역 */
+.con01 {width: 100vw; height: 100vh; position: relative}
+.con01 .videoWrap video{width: 100vw; height: 100vh; object-fit: cover; position: absolute;  left: 0; top: 0;}
+.con01 .title {position: absolute; width: 100%; left: 0%; top: 50%; transform: translateY(-50%); text-align: center; color: #fff}
+.con01 .title h2 {font-weight: 400; font-size: 80px; letter-spacing: -1px; line-height: 1.2}
+
+/*
+    [ 4. gsap -> con01 비디오 모션 ]
+     4-1). script_main.js 이동해서 4번 스크립트 작성
+     * 폴더 내에 gsap_기초설명 파일 참고해서 url 접속 후 플러그인 설명 후 cdn 걸기
+*/
+
+/* con02 - 워크 영역 */
+.con02 .title {font-size: 170px; line-height: 0.9; text-align: center; width: 100%; height: 100vh; padding-top: 30vh; box-sizing: border-box;}
+.con02 .title .en2 {font-size: 200px}
+.con02 .workList {display: flex; justify-content: space-between; width: 70%; flex-wrap: wrap; margin: 0 auto;}
+.con02 .workList li {width: 45%;margin-top: 200px}
+.con02 .workList li:nth-child(2n){ margin-top: 0}
+.con02 .workList li a {display: block; position: relative}
+.con02 .workList li a .imgBox img {width: 100%;}
+.con02 .workList li a .textBox h3 {font-weight: normal; font-size: 35px; margin: 20px 0 5px}
+.con02 .workList li a .textBox .info {display: flex; justify-content: space-between; color: #888}
+.con02 .workList li a .textBox .info span {color: #fff}
+
+/* con02 - 워크 영역 호버 효과 */
+.con02 .workList li a .imgBox {position: relative}
+.con02 .workList li a .imgBox:before {content: ''; width: 168px; height: 168px; border-radius: 100%; border: 1px solid #fff; background:  url(../images/readMore2.png) no-repeat center/35px; position: absolute; z-index: 1; left: 50%; top: 50%; transform: translate(-50%,-50%) rotate(45deg); transition: .3s; opacity: 0}
+.con02 .workList li a .imgBox:after {content: ''; width: 0px; height: 0px; border-radius: 100%;background: #fff url(../images/readMore3.png) no-repeat center/160px; position: absolute; z-index: 1; left: 50%; top: 50%; transform: translate(-50%,-50%); animation-name: spin; animation-duration: 10s; animation-iteration-count: infinite; animation-timing-function: linear; transition: .4s}
+@keyframes spin {0% {transform:  translate(-50%,-50%) rotate(0deg)} 100% {transform:  translate(-50%,-50%) rotate(360deg)}}
+.con02 .workList li a:hover .imgBox img  {filter: brightness(40%); transition: .3s}
+.con02 .workList li a:hover .imgBox:before {opacity: 1; z-index: 2}
+.con02 .workList li a:hover .imgBox:after { width: 168px; height: 168px;}
+/*
+    [ 5/6/7 gsap -> con02 영역 모션  ]
+    여기까지 레이아웃 작성 후 스크립트 5번 ~ 7번 작성
+
+*/
+
+/* con03 - 스킬 영역 */
+.con03 {position: relative; width: 100%; height: 100vh; margin-top: 200px;}
+.con03 .textWrap {width: 70%; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 2;}
+.con03 .textWrap ul li {font-size: 100px; line-height: 1.2; overflow: hidden;} /* 텍스트 모션때문에 오버플로우 */
+.con03 .textWrap ul li .en2 { padding-left: 20px}
+.con03 .textWrap .title {font-size: 18px;overflow: hidden;}
+/* 리드모어 버튼 - 위에 워크 리스트랑 거의 비슷함 */
+.btnWrap {position: absolute; right: -50%; top:60%; z-index: 3}
+.btnWrap a{display: block;width: 170px; height: 170px; border-radius: 100%; border: 2px solid #fff;  position: relative; box-sizing: border-box; transition: 0.5s}
+.btnWrap a img {width: 22%; position: absolute; left: 50%; top:50%; transform: translate(-50%,-50%) rotate(45deg)}
+.btnWrap a img:nth-child(2) {opacity: 0}
+.btnWrap a:before {content: ''; width: 0; height: 0; border-radius: 100%;background: #fff url(../images/readMore3.png) no-repeat center/158px; position: absolute;left: 50%; top: 50%; transform: translate(-50%,-50%); animation-name: spin; animation-duration: 10s; animation-iteration-count: infinite; animation-timing-function: linear; transition: .4s}
+.btnWrap a:hover {border-color: transparent}
+.btnWrap a:hover img:nth-child(2) {opacity: 1}
+.btnWrap a:hover:before { width: 100%; height: 100%;}
+
+/*
+    [ 8. simplyScroll skill 영역 배너 ]
+     8-1) https://www.logicbox.net/jquery/simplyscroll/ 사이트 들어가서 플러그인 내용과 사용법 설명하고 플러그인 다운 후 head 에 걸어주기
+     8-2) script_main.js 이동해서 6번 스크립트 작성
+     8-3) 개발자 도구로 확인해 보면 list 가 .simply-scroll-clip 로 감싸져 있다
+     8-4) 위에 링크에 css도 긁어 올 수 있는데 아래 세개가 제일 필요한 소스
+
+*/
+.simply-scroll-clip {overflow: hidden; transform: rotate(5deg) translate(150%, 400px) scale(1.1); opacity: 0;filter: brightness(50%);}
+/* 모션으로 오른쪽에서 날라오도록 해주고 filter 속성으로 어둡게 해준  */
+.simply-scroll .simply-scroll-list li { float: left; width: 400px; /* 넓이 자유롭게 */ }
+.simply-scroll .simply-scroll-list li img {width: 100%;}
+
+/* con03 - 스킬 영역 모션 (con03 html에 motion 붙이기) */
+.con03.motion .btnWrap {right: 50%;transition: 1.2s;}
+.con03.motion .simply-scroll-clip {transition: 1.2s; transform: rotate(5deg) translate(0, 400px) scale(1.1); opacity: 1; transition-delay: 0.3s}
+.con03.motion .textWrap p {display: block; animation-name: textAni; animation-duration: 1.3s;}
+
+
+/* footer */
+footer {width: 100%; height: 100vh; position: relative;}
+footer .textWrap {position: absolute; top: 30%; left: 0; width: 100%; padding: 0 60px; box-sizing: border-box;font-size: 160px; line-height: 1;letter-spacing: -1px}
+footer .textWrap a {display: block; margin-top: -30px}
+footer .textWrap .title {font-size: 20px; margin-bottom: 30px; padding-left: 15px}
+footer .bottom {position: absolute; bottom: 5%; left: 0; width: 100%; padding: 0 60px; box-sizing: border-box; display: flex; justify-content: space-between;font-size: 30px; letter-spacing: -1px;}
+footer .bottom .sns {display: flex; justify-content: space-between}
+footer .bottom .sns li {margin-right: 30px;}
+
+
+/* 메인 완성 ! Responsive.css 파일 만들고 반응형 시작  */

@@ -1,0 +1,9 @@
+@charset "utf-8";
+
+/* 영어 font2 - SilkSerifLightItalic */
+@font-face {
+ font-family: 'SilkSerifLightItalic';
+ font-weight: normal;
+ src: url(../fonts/SilkSerifLightItalic.woff2) format('woff2');
+}
+
